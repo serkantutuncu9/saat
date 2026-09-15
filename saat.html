@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ERA Koleji - Dev Saat</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+
+            overflow: hidden;
+
+            background: #000000;
+            color: #ffffff;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease;
+        }
+
+
+        /* ==================================
+           ANA ALAN
+        ================================== */
+
+        .ana-alan {
+
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 35px;
+        }
+
+
+        /* ==================================
+           SAAT
+        ================================== */
+
+        #saat {
+
+            font-size: 18vw;
+
+            font-weight: 700;
+
+            line-height: 0.9;
+
+            letter-spacing: 0.02em;
+
+            white-space: nowrap;
+
+            user-select: none;
+
+            transition:
+                color 0.3s ease,
+                font-family 0.3s ease;
+        }
+
+
+        /* ==================================
+           ERA LOGOSU
+        ================================== */
+
+        #logo {
+
+            width: 180px;
+
+            height: auto;
+
+            display: block;
+
+            user-select: none;
+
+            pointer-events: none;
+        }
+
+
+        /* ==================================
+           AYAR BUTONU
+        ================================== */
+
+        #ayarButonu {
+
+            position: fixed;
+
+            top: 20px;
+            left: 20px;
+
+            width: 48px;
+            height: 48px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.15);
+
+            color: white;
+
+            font-size: 22px;
+
+            cursor: pointer;
+
+            z-index: 100;
+
+            backdrop-filter: blur(5px);
+
+            transition: 0.3s;
+        }
+
+
+        #ayarButonu:hover {
+
+            background: rgba(255,255,255,0.30);
+
+            transform: scale(1.05);
+        }
+
+
+        /* ==================================
+           AYAR PANELİ
+        ================================== */
+
+        #ayarlar {
+
+            position: fixed;
+
+            top: 80px;
+            left: 20px;
+
+            width: 270px;
+
+            padding: 18px;
+
+            background: rgba(25,25,25,0.96);
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            border-radius: 14px;
+
+            color: white;
+
+            display: none;
+
+            flex-direction: column;
+
+            gap: 16px;
+
+            z-index: 99;
+
+            box-shadow:
+                0 10px 40px rgba(0,0,0,0.5);
+        }
+
+
+        .ayar-satir {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+        }
+
+
+        .ayar-satir label {
+
+            font-size: 14px;
+
+            white-space: nowrap;
+        }
+
+
+        input[type="color"] {
+
+            width: 55px;
+            height: 32px;
+
+            padding: 0;
+
+            border: none;
+
+            background: transparent;
+
+            cursor: pointer;
+        }
+
+
+        select {
+
+            width: 145px;
+
+            padding: 8px;
+
+            border-radius: 6px;
+
+            border: none;
+
+            cursor: pointer;
+        }
+
+
+        /* ==================================
+           TAM EKRAN BUTONU
+        ================================== */
+
+        #tamEkran {
+
+            position: fixed;
+
+            right: 20px;
+            bottom: 20px;
+
+            width: 55px;
+            height: 55px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.15);
+
+            color: white;
+
+            font-size: 26px;
+
+            cursor: pointer;
+
+            opacity: 0.45;
+
+            backdrop-filter: blur(5px);
+
+            z-index: 100;
+
+            transition:
+                opacity 0.3s,
+                background 0.3s,
+                transform 0.2s;
+        }
+
+
+        #tamEkran:hover {
+
+            opacity: 1;
+
+            background: rgba(255,255,255,0.30);
+
+            transform: scale(1.08);
+        }
+
+
+        /* ==================================
+           MOBİL
+        ================================== */
+
+        @media (max-width: 700px) {
+
+            #saat {
+
+                font-size: 17vw;
+            }
+
+
+            #logo {
+
+                width: 130px;
+            }
+
+
+            .ana-alan {
+
+                gap: 25px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==================================
+         ANA ALAN
+    ================================== -->
+
+    <div class="ana-alan">
+
+        <div id="saat">
+            00:00:00
+        </div>
+
+
+        <!--
+            ERA KOLEJİ LOGOSU
+
+            ImgBB üzerinden geliyor.
+        -->
+
+        <img
+            id="logo"
+            src="https://i.ibb.co/S4shgSBx/1000132242.png"
+            alt="ERA Koleji">
+            
+    </div>
+
+
+
+    <!-- ==================================
+         AYAR BUTONU
+    ================================== -->
+
+    <button
+        id="ayarButonu"
+        title="Ayarlar">
+
+        ⚙️
+
+    </button>
+
+
+
+    <!-- ==================================
+         AYAR PANELİ
+    ================================== -->
+
+    <div id="ayarlar">
+
+
+        <div class="ayar-satir">
+
+            <label>
+                Arka Plan
+            </label>
+
+            <input
+                type="color"
+                id="arkaPlan"
+                value="#000000">
+
+        </div>
+
+
+
+        <div class="ayar-satir">
+
+            <label>
+                Yazı Rengi
+            </label>
+
+            <input
+                type="color"
+                id="yaziRengi"
+                value="#ffffff">
+
+        </div>
+
+
+
+        <div class="ayar-satir">
+
+            <label>
+                Yazı Tipi
+            </label>
+
+            <select id="fontSec">
+
+                <option value="Arial, sans-serif">
+                    Arial
+                </option>
+
+                <option value="Verdana, sans-serif">
+                    Verdana
+                </option>
+
+                <option value="Tahoma, sans-serif">
+                    Tahoma
+                </option>
+
+                <option value="'Trebuchet MS', sans-serif">
+                    Trebuchet MS
+                </option>
+
+                <option value="'Courier New', monospace">
+                    Courier New
+                </option>
+
+                <option value="Impact, sans-serif">
+                    Impact
+                </option>
+
+                <option value="Georgia, serif">
+                    Georgia
+                </option>
+
+            </select>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ==================================
+         TAM EKRAN
+    ================================== -->
+
+    <button
+        id="tamEkran"
+        title="Tam Ekran">
+
+        ⛶
+
+    </button>
+
+
+
+    <script>
+
+
+        /* ==================================
+           SAAT
+        ================================== */
+
+        function saatiGuncelle() {
+
+            const simdi = new Date();
+
+
+            const saat =
+                String(
+                    simdi.getHours()
+                ).padStart(2, "0");
+
+
+            const dakika =
+                String(
+                    simdi.getMinutes()
+                ).padStart(2, "0");
+
+
+            const saniye =
+                String(
+                    simdi.getSeconds()
+                ).padStart(2, "0");
+
+
+            document.getElementById("saat")
+                .textContent =
+                `${saat}:${dakika}:${saniye}`;
+
+        }
+
+
+        saatiGuncelle();
+
+
+        setInterval(
+            saatiGuncelle,
+            1000
+        );
+
+
+
+        /* ==================================
+           ELEMENTLER
+        ================================== */
+
+        const body =
+            document.body;
+
+
+        const saat =
+            document.getElementById("saat");
+
+
+        const arkaPlan =
+            document.getElementById("arkaPlan");
+
+
+        const yaziRengi =
+            document.getElementById("yaziRengi");
+
+
+        const fontSec =
+            document.getElementById("fontSec");
+
+
+
+        /* ==================================
+           ARKA PLAN
+        ================================== */
+
+        arkaPlan.addEventListener(
+            "input",
+            function () {
+
+                body.style.backgroundColor =
+                    this.value;
+
+
+                localStorage.setItem(
+                    "arkaPlan",
+                    this.value
+                );
+
+            }
+        );
+
+
+
+        /* ==================================
+           YAZI RENGİ
+        ================================== */
+
+        yaziRengi.addEventListener(
+            "input",
+            function () {
+
+                saat.style.color =
+                    this.value;
+
+
+                localStorage.setItem(
+                    "yaziRengi",
+                    this.value
+                );
+
+            }
+        );
+
+
+
+        /* ==================================
+           FONT
+        ================================== */
+
+        fontSec.addEventListener(
+            "change",
+            function () {
+
+                saat.style.fontFamily =
+                    this.value;
+
+
+                localStorage.setItem(
+                    "fontSec",
+                    this.value
+                );
+
+            }
+        );
+
+
+
+        /* ==================================
+           AYAR PANELİ
+        ================================== */
+
+        const ayarButonu =
+            document.getElementById(
+                "ayarButonu"
+            );
+
+
+        const ayarlar =
+            document.getElementById(
+                "ayarlar"
+            );
+
+
+        ayarButonu.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    ayarlar.style.display === "flex"
+                ) {
+
+                    ayarlar.style.display =
+                        "none";
+
+                }
+
+                else {
+
+                    ayarlar.style.display =
+                        "flex";
+
+                }
+
+            }
+        );
+
+
+
+        /* ==================================
+           TAM EKRAN
+        ================================== */
+
+        const tamEkran =
+            document.getElementById(
+                "tamEkran"
+            );
+
+
+        tamEkran.addEventListener(
+            "click",
+            async function () {
+
+                try {
+
+                    if (
+                        !document.fullscreenElement
+                    ) {
+
+                        await document
+                            .documentElement
+                            .requestFullscreen();
+
+                    }
+
+                    else {
+
+                        await document
+                            .exitFullscreen();
+
+                    }
+
+                }
+
+                catch (hata) {
+
+                    console.log(hata);
+
+                }
+
+            }
+        );
+
+
+
+        /* ==================================
+           F TUŞU
+        ================================== */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key.toLowerCase() === "f" &&
+                    event.target.tagName !== "INPUT" &&
+                    event.target.tagName !== "SELECT"
+                ) {
+
+                    tamEkran.click();
+
+                }
+
+            }
+        );
+
+
+
+        /* ==================================
+           KAYITLI AYARLAR
+        ================================== */
+
+        const kayitliArkaPlan =
+            localStorage.getItem(
+                "arkaPlan"
+            );
+
+
+        const kayitliYaziRengi =
+            localStorage.getItem(
+                "yaziRengi"
+            );
+
+
+        const kayitliFont =
+            localStorage.getItem(
+                "fontSec"
+            );
+
+
+
+        if (kayitliArkaPlan) {
+
+            body.style.backgroundColor =
+                kayitliArkaPlan;
+
+            arkaPlan.value =
+                kayitliArkaPlan;
+
+        }
+
+
+
+        if (kayitliYaziRengi) {
+
+            saat.style.color =
+                kayitliYaziRengi;
+
+            yaziRengi.value =
+                kayitliYaziRengi;
+
+        }
+
+
+
+        if (kayitliFont) {
+
+            saat.style.fontFamily =
+                kayitliFont;
+
+            fontSec.value =
+                kayitliFont;
+
+        }
+
+
+    </script>
+
+
+</body>
+</html>

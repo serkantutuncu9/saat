@@ -1,753 +1,2501 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ERA Koleji - Dev Saat</title>
+<title>ERA Koleji | Zaman Yönetimi</title>
 
-    <style>
+<style>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        body {
-            width: 100vw;
-            height: 100vh;
+:root {
+    --arka-plan: #F5F0E6;
+    --yazi: #000000;
+    --kart: rgba(255,255,255,0.55);
+}
 
-            overflow: hidden;
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 
-            background: #000000;
-            color: #ffffff;
+    background: var(--arka-plan);
+    color: var(--yazi);
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
 
-            font-family: Arial, Helvetica, sans-serif;
+    transition: background 0.3s, color 0.3s;
+}
 
-            transition:
-                background 0.3s ease,
-                color 0.3s ease;
-        }
+button {
+    font-family: inherit;
+}
 
+/* =================================================
+   LOGO
+================================================= */
 
-        /* ==================================
-           ANA ALAN
-        ================================== */
+.logo {
+    width: 150px;
+    max-width: 20vw;
+    height: auto;
 
-        .ana-alan {
+    object-fit: contain;
 
-            width: 100%;
-            height: 100%;
+    user-select: none;
+    pointer-events: none;
+}
 
-            display: flex;
-            flex-direction: column;
 
-            justify-content: center;
-            align-items: center;
+/* =================================================
+   ANA MENÜ
+================================================= */
 
-            gap: 35px;
-        }
+#anaMenu {
+    width: 100%;
+    height: 100vh;
 
+    display: flex;
+    flex-direction: column;
 
-        /* ==================================
-           SAAT
-        ================================== */
+    justify-content: center;
+    align-items: center;
 
-        #saat {
+    gap: 45px;
+}
 
-            font-size: 18vw;
+.menu-baslik {
+    font-size: clamp(28px, 4vw, 55px);
 
-            font-weight: 700;
+    font-weight: 700;
 
-            line-height: 0.9;
+    letter-spacing: 2px;
+}
 
-            letter-spacing: 0.02em;
+.menu-secenekler {
+    display: flex;
 
-            white-space: nowrap;
+    gap: 25px;
 
-            user-select: none;
+    width: 90%;
+    max-width: 1100px;
+}
 
-            transition:
-                color 0.3s ease,
-                font-family 0.3s ease;
-        }
+.menu-kart {
+    flex: 1;
 
+    min-height: 230px;
 
-        /* ==================================
-           ERA LOGOSU
-        ================================== */
+    border: 2px solid rgba(0,0,0,0.15);
 
-        #logo {
+    border-radius: 25px;
 
-            width: 180px;
+    background: var(--kart);
 
-            height: auto;
+    color: var(--yazi);
 
-            display: block;
+    cursor: pointer;
 
-            user-select: none;
+    display: flex;
 
-            pointer-events: none;
-        }
+    flex-direction: column;
 
+    justify-content: center;
+    align-items: center;
 
-        /* ==================================
-           AYAR BUTONU
-        ================================== */
+    gap: 15px;
 
-        #ayarButonu {
+    transition: 0.25s;
 
-            position: fixed;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08);
+}
 
-            top: 20px;
-            left: 20px;
+.menu-kart:hover {
 
-            width: 48px;
-            height: 48px;
+    transform: translateY(-8px);
 
-            border: none;
+    box-shadow:
+        0 18px 40px rgba(0,0,0,0.15);
+}
 
-            border-radius: 50%;
+.menu-ikon {
+    font-size: 65px;
+}
 
-            background: rgba(255,255,255,0.15);
+.menu-kart h2 {
+    font-size: 28px;
+}
 
-            color: white;
+.menu-kart p {
+    font-size: 15px;
 
-            font-size: 22px;
+    opacity: 0.65;
+}
 
-            cursor: pointer;
 
-            z-index: 100;
+/* =================================================
+   GENEL MOD
+================================================= */
 
-            backdrop-filter: blur(5px);
+.mod {
+    width: 100%;
+    height: 100vh;
 
-            transition: 0.3s;
-        }
+    display: none;
 
+    position: relative;
+}
 
-        #ayarButonu:hover {
+.mod.aktif {
+    display: flex;
+}
 
-            background: rgba(255,255,255,0.30);
 
-            transform: scale(1.05);
-        }
+/* =================================================
+   SAAT
+================================================= */
 
+#saatModu {
 
-        /* ==================================
-           AYAR PANELİ
-        ================================== */
+    flex-direction: column;
 
-        #ayarlar {
+    justify-content: center;
 
-            position: fixed;
+    align-items: center;
 
-            top: 80px;
-            left: 20px;
+    gap: 35px;
+}
 
-            width: 270px;
+#saat {
 
-            padding: 18px;
+    font-size: clamp(80px, 18vw, 300px);
 
-            background: rgba(25,25,25,0.96);
+    font-weight: 700;
 
-            border: 1px solid rgba(255,255,255,0.15);
+    line-height: 0.9;
 
-            border-radius: 14px;
+    letter-spacing: 0.02em;
 
-            color: white;
+    white-space: nowrap;
 
-            display: none;
+    user-select: none;
+}
 
-            flex-direction: column;
 
-            gap: 16px;
+/* =================================================
+   SINAV AYARLARI
+================================================= */
 
-            z-index: 99;
+#sinavAyarlari {
 
-            box-shadow:
-                0 10px 40px rgba(0,0,0,0.5);
-        }
+    flex-direction: column;
 
+    justify-content: center;
 
-        .ayar-satir {
+    align-items: center;
 
-            display: flex;
+    gap: 25px;
+}
 
-            align-items: center;
+.ayar-baslik {
 
-            justify-content: space-between;
+    font-size: clamp(30px, 4vw, 55px);
+}
 
-            gap: 15px;
-        }
+.sinav-form {
 
+    width: min(600px, 90%);
 
-        .ayar-satir label {
+    background: rgba(255,255,255,0.6);
 
-            font-size: 14px;
+    border-radius: 20px;
 
-            white-space: nowrap;
-        }
+    padding: 30px;
 
+    display: flex;
 
-        input[type="color"] {
+    flex-direction: column;
 
-            width: 55px;
-            height: 32px;
+    gap: 20px;
 
-            padding: 0;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08);
+}
 
-            border: none;
+.form-satir {
 
-            background: transparent;
+    display: flex;
 
-            cursor: pointer;
-        }
+    justify-content: space-between;
 
+    align-items: center;
 
-        select {
+    gap: 20px;
 
-            width: 145px;
+    font-size: 20px;
+}
 
-            padding: 8px;
+.form-satir input {
 
-            border-radius: 6px;
+    padding: 12px 15px;
 
-            border: none;
+    font-size: 20px;
 
-            cursor: pointer;
-        }
+    border-radius: 10px;
 
+    border: 1px solid #bbb;
 
-        /* ==================================
-           TAM EKRAN BUTONU
-        ================================== */
+    background: white;
+}
 
-        #tamEkran {
+.baslat-btn {
 
-            position: fixed;
+    margin-top: 10px;
 
-            right: 20px;
-            bottom: 20px;
+    padding: 16px 25px;
 
-            width: 55px;
-            height: 55px;
+    border: none;
 
-            border: none;
+    border-radius: 12px;
 
-            border-radius: 50%;
+    background: #000;
 
-            background: rgba(255,255,255,0.15);
+    color: white;
 
-            color: white;
+    font-size: 20px;
 
-            font-size: 26px;
+    font-weight: bold;
 
-            cursor: pointer;
+    cursor: pointer;
 
-            opacity: 0.45;
+    transition: 0.2s;
+}
 
-            backdrop-filter: blur(5px);
+.baslat-btn:hover {
 
-            z-index: 100;
+    transform: scale(1.02);
+}
 
-            transition:
-                opacity 0.3s,
-                background 0.3s,
-                transform 0.2s;
-        }
 
+/* =================================================
+   SINAV EKRANI
+================================================= */
 
-        #tamEkran:hover {
+#sinavEkrani {
 
-            opacity: 1;
+    flex-direction: column;
 
-            background: rgba(255,255,255,0.30);
+    justify-content: center;
 
-            transform: scale(1.08);
-        }
+    align-items: center;
 
+    position: relative;
+}
 
-        /* ==================================
-           MOBİL
-        ================================== */
 
-        @media (max-width: 700px) {
+/* BÜYÜTÜLMÜŞ SINAV BİLGİLERİ */
 
-            #saat {
+.sinav-bilgi {
 
-                font-size: 17vw;
-            }
+    position: absolute;
 
+    top: 35px;
 
-            #logo {
+    left: 5%;
 
-                width: 130px;
-            }
+    width: 90%;
 
+    display: flex;
 
-            .ana-alan {
+    justify-content: space-between;
+}
 
-                gap: 25px;
-            }
-        }
+.sinav-bilgi-kutu {
 
-    </style>
+    text-align: center;
 
+    min-width: 300px;
+}
+
+.sinav-bilgi-kutu .etiket {
+
+    font-size: clamp(32px, 3vw, 48px);
+
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+.sinav-bilgi-kutu .deger {
+
+    font-size: clamp(40px, 4vw, 60px);
+
+    font-weight: 700;
+}
+
+
+/* SINAV MERKEZ */
+
+.sinav-merkez {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 35px;
+}
+
+#sinavSaati {
+
+    font-size: clamp(80px, 18vw, 300px);
+
+    font-weight: 700;
+
+    line-height: 0.9;
+
+    letter-spacing: 0.02em;
+
+    white-space: nowrap;
+
+    user-select: none;
+    
+}
+
+.sinav-kalan {
+
+    position: absolute;
+
+    bottom: 35px;
+
+    font-size: 25px;
+
+    font-weight: bold;
+
+    opacity: 0.75;
+}
+
+
+/* =================================================
+   SINAV DURUM
+================================================= */
+
+#sinavDurum {
+
+    position: absolute;
+
+    bottom: 75px;
+
+    font-size: 30px;
+
+    font-weight: bold;
+}
+
+
+/* =================================================
+   GERİ SAYIM AYAR
+================================================= */
+
+#sayacAyarlari {
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 25px;
+}
+
+.sayac-form {
+
+    display: flex;
+
+    gap: 15px;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.sayac-input {
+
+    width: 130px;
+
+    padding: 15px;
+
+    text-align: center;
+
+    font-size: 28px;
+
+    border-radius: 12px;
+
+    border: 1px solid #aaa;
+}
+
+.sayac-ayrac {
+
+    font-size: 35px;
+
+    font-weight: bold;
+}
+
+
+/* =================================================
+   GERİ SAYIM
+================================================= */
+
+#sayacModu {
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 35px;
+}
+
+#sayac {
+
+    font-size: clamp(80px, 18vw, 300px);
+
+    font-weight: 700;
+
+    line-height: 0.9;
+
+    white-space: nowrap;
+}
+
+.sayac-kontrol {
+
+    display: flex;
+
+    gap: 12px;
+}
+
+.kontrol-btn {
+
+    padding: 13px 25px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #000;
+
+    color: white;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.kontrol-btn:hover {
+
+    opacity: 0.8;
+
+    transform: scale(1.03);
+}
+
+#sayacDurum {
+
+    font-size: 22px;
+
+    font-weight: bold;
+}
+
+
+/* =================================================
+   LOGO ALT
+================================================= */
+
+.alt-logo {
+
+    position: absolute;
+
+    bottom: 35px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 120px;
+}
+
+
+/* =================================================
+   GERİ BUTONU
+================================================= */
+
+.geri-btn {
+
+    position: fixed;
+
+    top: 20px;
+    left: 20px;
+
+    z-index: 100;
+
+    border: none;
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 50%;
+
+    background: rgba(0,0,0,0.12);
+
+    color: var(--yazi);
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+.geri-btn:hover {
+
+    background: rgba(0,0,0,0.25);
+}
+
+
+/* =================================================
+   AYAR BUTONU
+================================================= */
+
+#ayarButonu {
+
+    position: fixed;
+
+    top: 20px;
+    right: 20px;
+
+    z-index: 200;
+
+    width: 48px;
+    height: 48px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(0,0,0,0.12);
+
+    color: var(--yazi);
+
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+
+/* =================================================
+   AYAR PANELİ
+================================================= */
+
+#ayarlar {
+
+    position: fixed;
+
+    top: 80px;
+    right: 20px;
+
+    z-index: 201;
+
+    width: 290px;
+
+    padding: 20px;
+
+    background: rgba(30,30,30,0.95);
+
+    color: white;
+
+    border-radius: 15px;
+
+    display: none;
+
+    flex-direction: column;
+
+    gap: 17px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.35);
+}
+
+.ayar-satir {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.ayar-satir input[type="color"] {
+
+    width: 55px;
+
+    height: 35px;
+
+    border: none;
+
+    cursor: pointer;
+}
+
+.ayar-satir select {
+
+    padding: 8px;
+
+    border-radius: 7px;
+}
+
+
+/* =================================================
+   TAM EKRAN
+================================================= */
+
+#tamEkran {
+
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    width: 55px;
+    height: 55px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(0,0,0,0.12);
+
+    color: var(--yazi);
+
+    font-size: 26px;
+
+    cursor: pointer;
+
+    opacity: 0.45;
+
+    z-index: 200;
+
+    transition: 0.25s;
+}
+
+#tamEkran:hover {
+
+    opacity: 1;
+
+    transform: scale(1.08);
+}
+
+
+/* =================================================
+   UYARI EKRANI
+================================================= */
+
+#uyariEkrani {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    background: rgba(245,240,230,0.96);
+
+    display: none;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    gap: 25px;
+
+    animation: uyariGiris 0.5s ease;
+}
+
+#uyariEkrani.aktif {
+
+    display: flex;
+}
+
+.uyari-ikon {
+
+    font-size: 100px;
+
+    animation: uyariTitre 0.8s infinite;
+}
+
+#uyariBaslik {
+
+    font-size: clamp(45px, 7vw, 100px);
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+}
+
+#uyariAlt {
+
+    font-size: clamp(20px, 3vw, 35px);
+
+    font-weight: 600;
+
+    opacity: 0.75;
+}
+
+.uyari-kapat {
+
+    margin-top: 15px;
+
+    padding: 15px 35px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #000;
+
+    color: white;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+@keyframes uyariGiris {
+
+    from {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes uyariTitre {
+
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+
+/* =================================================
+   MOBİL
+================================================= */
+
+@media (max-width: 700px) {
+
+    .menu-secenekler {
+
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+    .menu-kart {
+
+        min-height: 150px;
+    }
+
+    .menu-ikon {
+
+        font-size: 40px;
+    }
+
+    .menu-kart h2 {
+
+        font-size: 22px;
+    }
+
+    .sinav-bilgi {
+
+        top: 75px;
+    }
+
+    .sinav-bilgi-kutu {
+
+        min-width: 0;
+    }
+
+    .sinav-bilgi-kutu .etiket {
+
+        font-size: 20px;
+    }
+
+    .sinav-bilgi-kutu .deger {
+
+        font-size: 28px;
+    }
+
+    .sayac-form {
+
+        gap: 7px;
+    }
+
+    .sayac-input {
+
+        width: 90px;
+
+        font-size: 22px;
+    }
+
+}
+
+</style>
 </head>
 
 
 <body>
 
 
-    <!-- ==================================
-         ANA ALAN
-    ================================== -->
+<!-- =================================================
+     ANA MENÜ
+================================================= -->
 
-    <div class="ana-alan">
+<section id="anaMenu">
 
-        <div id="saat">
+    <div class="menu-baslik">
+        ERA ZAMAN YÖNETİMİ
+    </div>
+
+
+    <div class="menu-secenekler">
+
+
+        <button
+            class="menu-kart"
+            onclick="saatModunuAc()">
+
+            <div class="menu-ikon">
+                🕐
+            </div>
+
+            <h2>
+                SAAT
+            </h2>
+
+            <p>
+                Standart saat ekranı
+            </p>
+
+        </button>
+
+
+        <button
+            class="menu-kart"
+            onclick="sinavAyarlariniAc()">
+
+            <div class="menu-ikon">
+                📝
+            </div>
+
+            <h2>
+                SINAV SAATİ
+            </h2>
+
+            <p>
+                Sınav başlangıç ve bitiş saati
+            </p>
+
+        </button>
+
+
+        <button
+            class="menu-kart"
+            onclick="sayacAyarlariniAc()">
+
+            <div class="menu-ikon">
+                ⏱️
+            </div>
+
+            <h2>
+                GERİ SAYIM SAYACI
+            </h2>
+
+            <p>
+                Belirlediğiniz süreyi geri sayın
+            </p>
+
+        </button>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =================================================
+     SAAT
+================================================= -->
+
+<section
+    id="saatModu"
+    class="mod">
+
+    <button
+        class="geri-btn"
+        onclick="anaMenuyeDon()">
+
+        ←
+
+    </button>
+
+
+    <div id="saat">
+        00:00:00
+    </div>
+
+
+    <img
+        class="logo"
+        src="https://i.ibb.co/S4shgSBx/1000132242.png"
+        alt="ERA Koleji">
+
+</section>
+
+
+
+<!-- =================================================
+     SINAV AYARLARI
+================================================= -->
+
+<section
+    id="sinavAyarlari"
+    class="mod">
+
+    <button
+        class="geri-btn"
+        onclick="anaMenuyeDon()">
+
+        ←
+
+    </button>
+
+
+    <h1 class="ayar-baslik">
+        SINAV SAATİ
+    </h1>
+
+
+    <div class="sinav-form">
+
+
+        <div class="form-satir">
+
+            <label>
+                Sınav Başlangıcı
+            </label>
+
+            <input
+                type="time"
+                id="sinavBaslangic"
+                value="10:00">
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <label>
+                Sınav Bitişi
+            </label>
+
+            <input
+                type="time"
+                id="sinavBitis"
+                value="11:00">
+
+        </div>
+
+
+        <button
+            class="baslat-btn"
+            onclick="sinaviBaslat()">
+
+            SINAVI BAŞLAT
+
+        </button>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =================================================
+     SINAV EKRANI
+================================================= -->
+
+<section
+    id="sinavEkrani"
+    class="mod">
+
+
+    <button
+        class="geri-btn"
+        onclick="anaMenuyeDon()">
+
+        ←
+
+    </button>
+
+
+    <div class="sinav-bilgi">
+
+
+        <div class="sinav-bilgi-kutu">
+
+            <div class="etiket">
+                Sınav Başlangıcı
+            </div>
+
+            <div
+                class="deger"
+                id="gosterBaslangic">
+
+                10:00
+
+            </div>
+
+        </div>
+
+
+        <div class="sinav-bilgi-kutu">
+
+            <div class="etiket">
+                Sınav Bitişi
+            </div>
+
+            <div
+                class="deger"
+                id="gosterBitis">
+
+                11:00
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="sinav-merkez">
+
+        <div id="sinavSaati">
             00:00:00
         </div>
 
 
-        <!--
-            ERA KOLEJİ LOGOSU
-
-            ImgBB üzerinden geliyor.
-        -->
-
         <img
-            id="logo"
+            class="logo"
             src="https://i.ibb.co/S4shgSBx/1000132242.png"
             alt="ERA Koleji">
-            
+
     </div>
 
 
+    <div
+        class="sinav-kalan"
+        id="sinavKalan">
 
-    <!-- ==================================
-         AYAR BUTONU
-    ================================== -->
+        Sınav süresi hesaplanıyor...
+
+    </div>
+
+
+    <div id="sinavDurum"></div>
+
+
+</section>
+
+
+
+<!-- =================================================
+     GERİ SAYIM AYARLARI
+================================================= -->
+
+<section
+    id="sayacAyarlari"
+    class="mod">
+
 
     <button
-        id="ayarButonu"
-        title="Ayarlar">
+        class="geri-btn"
+        onclick="anaMenuyeDon()">
 
-        ⚙️
+        ←
 
     </button>
 
 
-
-    <!-- ==================================
-         AYAR PANELİ
-    ================================== -->
-
-    <div id="ayarlar">
+    <h1 class="ayar-baslik">
+        GERİ SAYIM SAYACI
+    </h1>
 
 
-        <div class="ayar-satir">
+    <div class="sayac-form">
 
-            <label>
-                Arka Plan
-            </label>
 
-            <input
-                type="color"
-                id="arkaPlan"
-                value="#000000">
+        <input
+            class="sayac-input"
+            id="sayacSaat"
+            type="number"
+            min="0"
+            max="99"
+            value="0">
 
+
+        <div class="sayac-ayrac">
+            :
         </div>
 
 
+        <input
+            class="sayac-input"
+            id="sayacDakika"
+            type="number"
+            min="0"
+            max="59"
+            value="10">
 
-        <div class="ayar-satir">
 
-            <label>
-                Yazı Rengi
-            </label>
-
-            <input
-                type="color"
-                id="yaziRengi"
-                value="#ffffff">
-
+        <div class="sayac-ayrac">
+            :
         </div>
 
 
-
-        <div class="ayar-satir">
-
-            <label>
-                Yazı Tipi
-            </label>
-
-            <select id="fontSec">
-
-                <option value="Arial, sans-serif">
-                    Arial
-                </option>
-
-                <option value="Verdana, sans-serif">
-                    Verdana
-                </option>
-
-                <option value="Tahoma, sans-serif">
-                    Tahoma
-                </option>
-
-                <option value="'Trebuchet MS', sans-serif">
-                    Trebuchet MS
-                </option>
-
-                <option value="'Courier New', monospace">
-                    Courier New
-                </option>
-
-                <option value="Impact, sans-serif">
-                    Impact
-                </option>
-
-                <option value="Georgia, serif">
-                    Georgia
-                </option>
-
-            </select>
-
-        </div>
+        <input
+            class="sayac-input"
+            id="sayacSaniye"
+            type="number"
+            min="0"
+            max="59"
+            value="0">
 
 
     </div>
 
 
-
-    <!-- ==================================
-         TAM EKRAN
-    ================================== -->
-
     <button
-        id="tamEkran"
-        title="Tam Ekran">
+        class="baslat-btn"
+        onclick="sayaciBaslat()">
 
-        ⛶
+        BAŞLAT
 
     </button>
 
 
-
-    <script>
-
-
-        /* ==================================
-           SAAT
-        ================================== */
-
-        function saatiGuncelle() {
-
-            const simdi = new Date();
+</section>
 
 
-            const saat =
-                String(
-                    simdi.getHours()
-                ).padStart(2, "0");
+
+<!-- =================================================
+     GERİ SAYIM
+================================================= -->
+
+<section
+    id="sayacModu"
+    class="mod">
 
 
-            const dakika =
-                String(
-                    simdi.getMinutes()
-                ).padStart(2, "0");
+    <button
+        class="geri-btn"
+        onclick="anaMenuyeDon()">
+
+        ←
+
+    </button>
 
 
-            const saniye =
-                String(
-                    simdi.getSeconds()
-                ).padStart(2, "0");
+    <div id="sayac">
+        00:10:00
+    </div>
 
 
-            document.getElementById("saat")
-                .textContent =
-                `${saat}:${dakika}:${saniye}`;
+    <div class="sayac-kontrol">
+
+
+        <!-- TEK BAŞLAT / DURDUR BUTONU -->
+
+        <button
+            class="kontrol-btn"
+            id="sayacBaslatDurdur"
+            onclick="sayacBaslatDurdur()">
+
+            ▶ Başlat
+
+        </button>
+
+
+        <button
+            class="kontrol-btn"
+            onclick="sayaciSifirla()">
+
+            ↻ Sıfırla
+
+        </button>
+
+
+    </div>
+
+
+    <div id="sayacDurum">
+        Hazır
+    </div>
+
+
+    <img
+        class="logo alt-logo"
+        src="https://i.ibb.co/S4shgSBx/1000132242.png"
+        alt="ERA Koleji">
+
+
+</section>
+
+
+
+<!-- =================================================
+     AYARLAR
+================================================= -->
+
+<button
+    id="ayarButonu"
+    title="Ayarlar">
+
+    ⚙️
+
+</button>
+
+
+<div id="ayarlar">
+
+
+    <div class="ayar-satir">
+
+        <label>
+            Arka Plan
+        </label>
+
+        <input
+            type="color"
+            id="arkaPlan"
+            value="#F5F0E6">
+
+    </div>
+
+
+    <div class="ayar-satir">
+
+        <label>
+            Yazı Rengi
+        </label>
+
+        <input
+            type="color"
+            id="yaziRengi"
+            value="#000000">
+
+    </div>
+
+
+    <div class="ayar-satir">
+
+        <label>
+            Yazı Tipi
+        </label>
+
+
+        <select id="fontSec">
+
+            <option value="Arial, sans-serif">
+                Arial
+            </option>
+
+            <option value="Verdana, sans-serif">
+                Verdana
+            </option>
+
+            <option value="Tahoma, sans-serif">
+                Tahoma
+            </option>
+
+            <option value="'Trebuchet MS', sans-serif">
+                Trebuchet MS
+            </option>
+
+            <option value="'Courier New', monospace">
+                Courier New
+            </option>
+
+            <option value="Impact, sans-serif">
+                Impact
+            </option>
+
+            <option value="Georgia, serif">
+                Georgia
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
+
+<!-- =================================================
+     TAM EKRAN
+================================================= -->
+
+<button
+    id="tamEkran"
+    title="Tam Ekran">
+
+    ⛶
+
+</button>
+
+
+
+<!-- =================================================
+     UYARI EKRANI
+================================================= -->
+
+<div id="uyariEkrani">
+
+
+    <div class="uyari-ikon">
+        🔔
+    </div>
+
+
+    <div id="uyariBaslik">
+        SÜRE DOLDU
+    </div>
+
+
+    <div id="uyariAlt">
+        İşlem tamamlandı.
+    </div>
+
+
+    <button
+        class="uyari-kapat"
+        onclick="uyariyiKapat()">
+
+        TAMAM
+
+    </button>
+
+
+</div>
+
+
+
+<script>
+
+/* =================================================
+   GENEL
+================================================= */
+
+function tumModlariGizle() {
+
+    document
+        .querySelectorAll(".mod")
+        .forEach(mod => {
+
+            mod.classList.remove("aktif");
+
+        });
+
+    document
+        .getElementById("anaMenu")
+        .style.display = "none";
+}
+
+
+function anaMenuyeDon() {
+
+    clearInterval(sinavInterval);
+
+    clearInterval(sayacInterval);
+
+    sayacCalisiyor = false;
+
+    document
+        .querySelectorAll(".mod")
+        .forEach(mod => {
+
+            mod.classList.remove("aktif");
+
+        });
+
+    document
+        .getElementById("anaMenu")
+        .style.display = "flex";
+}
+
+
+/* =================================================
+   SAAT
+================================================= */
+
+function saatiGuncelle() {
+
+    const simdi = new Date();
+
+    const saat =
+        String(simdi.getHours())
+        .padStart(2, "0");
+
+    const dakika =
+        String(simdi.getMinutes())
+        .padStart(2, "0");
+
+    const saniye =
+        String(simdi.getSeconds())
+        .padStart(2, "0");
+
+    const zaman =
+        `${saat}:${dakika}:${saniye}`;
+
+
+    document
+        .getElementById("saat")
+        .textContent = zaman;
+
+
+    document
+        .getElementById("sinavSaati")
+        .textContent = zaman;
+}
+
+saatiGuncelle();
+
+setInterval(
+    saatiGuncelle,
+    1000
+);
+
+
+/* =================================================
+   SAAT MODU
+================================================= */
+
+function saatModunuAc() {
+
+    tumModlariGizle();
+
+    document
+        .getElementById("saatModu")
+        .classList.add("aktif");
+}
+
+
+/* =================================================
+   SINAV AYARLARI
+================================================= */
+
+function sinavAyarlariniAc() {
+
+    tumModlariGizle();
+
+    document
+        .getElementById("sinavAyarlari")
+        .classList.add("aktif");
+}
+
+
+/* =================================================
+   SINAV
+================================================= */
+
+let sinavInterval = null;
+
+
+function sinaviBaslat() {
+
+    const baslangic =
+        document
+        .getElementById("sinavBaslangic")
+        .value;
+
+
+    const bitis =
+        document
+        .getElementById("sinavBitis")
+        .value;
+
+
+    if (!baslangic || !bitis) {
+
+        alert(
+            "Lütfen başlangıç ve bitiş saatlerini seçin."
+        );
+
+        return;
+    }
+
+
+    const [basSaat, basDakika] =
+        baslangic.split(":").map(Number);
+
+
+    const [bitSaat, bitDakika] =
+        bitis.split(":").map(Number);
+
+
+    const simdi = new Date();
+
+
+    const basZaman = new Date(simdi);
+
+    basZaman.setHours(
+        basSaat,
+        basDakika,
+        0,
+        0
+    );
+
+
+    const bitZaman = new Date(simdi);
+
+    bitZaman.setHours(
+        bitSaat,
+        bitDakika,
+        0,
+        0
+    );
+
+
+    if (bitZaman <= basZaman) {
+
+        alert(
+            "Bitiş saati başlangıç saatinden sonra olmalıdır."
+        );
+
+        return;
+    }
+
+
+    document
+        .getElementById("gosterBaslangic")
+        .textContent = baslangic;
+
+
+    document
+        .getElementById("gosterBitis")
+        .textContent = bitis;
+
+
+    tumModlariGizle();
+
+
+    document
+        .getElementById("sinavEkrani")
+        .classList.add("aktif");
+
+
+    clearInterval(sinavInterval);
+
+
+    sinavKontrol();
+
+
+    sinavInterval =
+        setInterval(
+            sinavKontrol,
+            1000
+        );
+}
+
+
+/* =================================================
+   SINAV KONTROL
+================================================= */
+
+function sinavKontrol() {
+
+    const simdi = new Date();
+
+
+    const baslangic =
+        document
+        .getElementById("sinavBaslangic")
+        .value;
+
+
+    const bitis =
+        document
+        .getElementById("sinavBitis")
+        .value;
+
+
+    const [basSaat, basDakika] =
+        baslangic.split(":").map(Number);
+
+
+    const [bitSaat, bitDakika] =
+        bitis.split(":").map(Number);
+
+
+    const basZaman = new Date();
+
+    basZaman.setHours(
+        basSaat,
+        basDakika,
+        0,
+        0
+    );
+
+
+    const bitZaman = new Date();
+
+    bitZaman.setHours(
+        bitSaat,
+        bitDakika,
+        0,
+        0
+    );
+
+
+    const kalan =
+        bitZaman - simdi;
+
+
+    const sinavKalan =
+        document.getElementById(
+            "sinavKalan"
+        );
+
+
+    const sinavDurum =
+        document.getElementById(
+            "sinavDurum"
+        );
+
+
+    /* BİTTİ */
+
+    if (kalan <= 0) {
+
+        sinavKalan.textContent =
+            "Sınav süresi doldu.";
+
+        sinavDurum.textContent =
+            "SINAV SÜRESİ DOLDU";
+
+
+        clearInterval(
+            sinavInterval
+        );
+
+
+        uyariGoster(
+            "SINAV SÜRESİ DOLDU",
+            "Sınav tamamlandı."
+        );
+
+
+        return;
+    }
+
+
+    /* HENÜZ BAŞLAMADI */
+
+    if (simdi < basZaman) {
+
+        const bekleme =
+            basZaman - simdi;
+
+
+        sinavKalan.textContent =
+            "Sınavın başlamasına: " +
+            sureFormatla(bekleme);
+
+
+        sinavDurum.textContent =
+            "SINAV BAŞLAMADI";
+
+
+        return;
+    }
+
+
+    /* DEVAM EDİYOR */
+
+    sinavDurum.textContent =
+        "SINAV DEVAM EDİYOR";
+
+
+    sinavKalan.textContent =
+        "Kalan Süre: " +
+        sureFormatla(kalan);
+}
+
+
+/* =================================================
+   SÜRE FORMAT
+================================================= */
+
+function sureFormatla(ms) {
+
+    let toplam =
+        Math.floor(ms / 1000);
+
+
+    let saat =
+        Math.floor(
+            toplam / 3600
+        );
+
+
+    toplam %= 3600;
+
+
+    let dakika =
+        Math.floor(
+            toplam / 60
+        );
+
+
+    let saniye =
+        toplam % 60;
+
+
+    return (
+        String(saat).padStart(2,"0") +
+        ":" +
+        String(dakika).padStart(2,"0") +
+        ":" +
+        String(saniye).padStart(2,"0")
+    );
+}
+
+
+/* =================================================
+   SAYAC AYARLARI
+================================================= */
+
+function sayacAyarlariniAc() {
+
+    tumModlariGizle();
+
+    document
+        .getElementById("sayacAyarlari")
+        .classList.add("aktif");
+}
+
+
+/* =================================================
+   SAYAC DEĞİŞKENLERİ
+================================================= */
+
+let sayacInterval = null;
+
+let sayacToplamSaniye = 0;
+
+let sayacCalisiyor = false;
+
+
+/* =================================================
+   SAYACI AYARLA
+================================================= */
+
+function sayaciBaslat() {
+
+    const saat =
+        parseInt(
+            document
+            .getElementById("sayacSaat")
+            .value
+        ) || 0;
+
+
+    const dakika =
+        parseInt(
+            document
+            .getElementById("sayacDakika")
+            .value
+        ) || 0;
+
+
+    const saniye =
+        parseInt(
+            document
+            .getElementById("sayacSaniye")
+            .value
+        ) || 0;
+
+
+    sayacToplamSaniye =
+        (saat * 3600) +
+        (dakika * 60) +
+        saniye;
+
+
+    if (sayacToplamSaniye <= 0) {
+
+        alert(
+            "Lütfen 0'dan büyük bir süre girin."
+        );
+
+        return;
+    }
+
+
+    clearInterval(
+        sayacInterval
+    );
+
+
+    sayacCalisiyor = false;
+
+
+    tumModlariGizle();
+
+
+    document
+        .getElementById("sayacModu")
+        .classList.add("aktif");
+
+
+    sayaciGoster();
+
+
+    document
+        .getElementById("sayacBaslatDurdur")
+        .textContent =
+        "▶ Başlat";
+
+
+    document
+        .getElementById("sayacDurum")
+        .textContent =
+        "Hazır";
+}
+
+
+/* =================================================
+   TEK BAŞLAT / DURDUR BUTONU
+================================================= */
+
+function sayacBaslatDurdur() {
+
+    if (sayacCalisiyor) {
+
+        /* DURDUR */
+
+        clearInterval(
+            sayacInterval
+        );
+
+
+        sayacCalisiyor = false;
+
+
+        document
+            .getElementById(
+                "sayacBaslatDurdur"
+            )
+            .textContent =
+            "▶ Başlat";
+
+
+        document
+            .getElementById(
+                "sayacDurum"
+            )
+            .textContent =
+            "Durduruldu";
+
+
+        return;
+    }
+
+
+    /* BAŞLAT */
+
+    if (sayacToplamSaniye <= 0) {
+
+        return;
+    }
+
+
+    sayacCalisiyor = true;
+
+
+    document
+        .getElementById(
+            "sayacBaslatDurdur"
+        )
+        .textContent =
+        "⏸ Durdur";
+
+
+    document
+        .getElementById(
+            "sayacDurum"
+        )
+        .textContent =
+        "Çalışıyor";
+
+
+    sayacInterval =
+        setInterval(
+            function () {
+
+                if (
+                    sayacToplamSaniye <= 0
+                ) {
+
+                    clearInterval(
+                        sayacInterval
+                    );
+
+
+                    sayacCalisiyor = false;
+
+
+                    document
+                        .getElementById(
+                            "sayacBaslatDurdur"
+                        )
+                        .textContent =
+                        "▶ Başlat";
+
+
+                    document
+                        .getElementById(
+                            "sayac"
+                        )
+                        .textContent =
+                        "00:00:00";
+
+
+                    document
+                        .getElementById(
+                            "sayacDurum"
+                        )
+                        .textContent =
+                        "SÜRE DOLDU";
+
+
+                    /* UYARI */
+
+                    uyariGoster(
+                        "SÜRE DOLDU",
+                        "Geri sayım tamamlandı."
+                    );
+
+
+                    return;
+                }
+
+
+                sayacToplamSaniye--;
+
+                sayaciGoster();
+
+            },
+            1000
+        );
+}
+
+
+/* =================================================
+   SAYACI GÖSTER
+================================================= */
+
+function sayaciGoster() {
+
+    let saat =
+        Math.floor(
+            sayacToplamSaniye / 3600
+        );
+
+
+    let dakika =
+        Math.floor(
+            (sayacToplamSaniye % 3600) / 60
+        );
+
+
+    let saniye =
+        sayacToplamSaniye % 60;
+
+
+    document
+        .getElementById("sayac")
+        .textContent =
+
+        String(saat).padStart(2,"0") +
+        ":" +
+        String(dakika).padStart(2,"0") +
+        ":" +
+        String(saniye).padStart(2,"0");
+}
+
+
+/* =================================================
+   SAYACI SIFIRLA
+================================================= */
+
+function sayaciSifirla() {
+
+    clearInterval(
+        sayacInterval
+    );
+
+
+    sayacCalisiyor = false;
+
+    sayacToplamSaniye = 0;
+
+
+    document
+        .getElementById("sayac")
+        .textContent =
+        "00:00:00";
+
+
+    document
+        .getElementById(
+            "sayacBaslatDurdur"
+        )
+        .textContent =
+        "▶ Başlat";
+
+
+    document
+        .getElementById(
+            "sayacDurum"
+        )
+        .textContent =
+        "Sıfırlandı";
+}
+
+
+/* =================================================
+   UYARI
+================================================= */
+
+let alarmContext = null;
+
+
+function uyariGoster(baslik, alt) {
+
+    document
+        .getElementById("uyariBaslik")
+        .textContent = baslik;
+
+
+    document
+        .getElementById("uyariAlt")
+        .textContent = alt;
+
+
+    document
+        .getElementById("uyariEkrani")
+        .classList.add("aktif");
+
+
+    alarmSesiCal();
+}
+
+
+/* =================================================
+   UYARIYI KAPAT
+================================================= */
+
+function uyariyiKapat() {
+
+    document
+        .getElementById("uyariEkrani")
+        .classList.remove("aktif");
+
+
+    if (alarmContext) {
+
+        alarmContext.close();
+
+        alarmContext = null;
+    }
+}
+
+
+/* =================================================
+   UYARI SESİ
+================================================= */
+
+function alarmSesiCal() {
+
+    try {
+
+        alarmContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+
+        const ctx =
+            alarmContext;
+
+
+        const oscillator =
+            ctx.createOscillator();
+
+
+        const gain =
+            ctx.createGain();
+
+
+        oscillator.type =
+            "sine";
+
+
+        oscillator.frequency.value =
+            880;
+
+
+        gain.gain.setValueAtTime(
+            0.0001,
+            ctx.currentTime
+        );
+
+
+        oscillator.connect(gain);
+
+        gain.connect(ctx.destination);
+
+
+        oscillator.start();
+
+
+        /*
+           3 kez bip sesi
+        */
+
+        for (
+            let i = 0;
+            i < 3;
+            i++
+        ) {
+
+            const basla =
+                ctx.currentTime +
+                i * 0.55;
+
+
+            gain.gain.setValueAtTime(
+                0.0001,
+                basla
+            );
+
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.35,
+                basla + 0.03
+            );
+
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.0001,
+                basla + 0.35
+            );
 
         }
 
 
-        saatiGuncelle();
-
-
-        setInterval(
-            saatiGuncelle,
-            1000
+        oscillator.stop(
+            ctx.currentTime + 2
         );
 
+    }
 
+    catch (e) {
 
-        /* ==================================
-           ELEMENTLER
-        ================================== */
-
-        const body =
-            document.body;
-
-
-        const saat =
-            document.getElementById("saat");
-
-
-        const arkaPlan =
-            document.getElementById("arkaPlan");
-
-
-        const yaziRengi =
-            document.getElementById("yaziRengi");
-
-
-        const fontSec =
-            document.getElementById("fontSec");
-
-
-
-        /* ==================================
-           ARKA PLAN
-        ================================== */
-
-        arkaPlan.addEventListener(
-            "input",
-            function () {
-
-                body.style.backgroundColor =
-                    this.value;
-
-
-                localStorage.setItem(
-                    "arkaPlan",
-                    this.value
-                );
-
-            }
+        console.log(
+            "Ses oluşturulamadı.",
+            e
         );
 
+    }
+}
 
 
-        /* ==================================
-           YAZI RENGİ
-        ================================== */
+/* =================================================
+   AYARLAR
+================================================= */
 
-        yaziRengi.addEventListener(
-            "input",
-            function () {
-
-                saat.style.color =
-                    this.value;
+const ayarButonu =
+    document.getElementById(
+        "ayarButonu"
+    );
 
 
-                localStorage.setItem(
-                    "yaziRengi",
-                    this.value
-                );
-
-            }
-        );
+const ayarlar =
+    document.getElementById(
+        "ayarlar"
+    );
 
 
+ayarButonu.addEventListener(
+    "click",
+    function () {
 
-        /* ==================================
-           FONT
-        ================================== */
+        ayarlar.style.display =
+            ayarlar.style.display === "flex"
+            ? "none"
+            : "flex";
 
-        fontSec.addEventListener(
-            "change",
-            function () {
-
-                saat.style.fontFamily =
-                    this.value;
-
-
-                localStorage.setItem(
-                    "fontSec",
-                    this.value
-                );
-
-            }
-        );
+    }
+);
 
 
+/* =================================================
+   ARKA PLAN
+================================================= */
 
-        /* ==================================
-           AYAR PANELİ
-        ================================== */
+const arkaPlan =
+    document.getElementById(
+        "arkaPlan"
+    );
 
-        const ayarButonu =
-            document.getElementById(
-                "ayarButonu"
+
+arkaPlan.addEventListener(
+    "input",
+    function () {
+
+        document.documentElement
+            .style.setProperty(
+                "--arka-plan",
+                this.value
             );
 
 
-        const ayarlar =
-            document.getElementById(
-                "ayarlar"
+        localStorage.setItem(
+            "eraArkaPlan",
+            this.value
+        );
+
+    }
+);
+
+
+/* =================================================
+   YAZI RENGİ
+================================================= */
+
+const yaziRengi =
+    document.getElementById(
+        "yaziRengi"
+    );
+
+
+yaziRengi.addEventListener(
+    "input",
+    function () {
+
+        document.documentElement
+            .style.setProperty(
+                "--yazi",
+                this.value
             );
 
 
-        ayarButonu.addEventListener(
-            "click",
-            function () {
+        localStorage.setItem(
+            "eraYaziRengi",
+            this.value
+        );
+
+    }
+);
+
+
+/* =================================================
+   FONT
+================================================= */
+
+const fontSec =
+    document.getElementById(
+        "fontSec"
+    );
+
+
+fontSec.addEventListener(
+    "change",
+    function () {
+
+        document.body.style.fontFamily =
+            this.value;
+
+
+        localStorage.setItem(
+            "eraFont",
+            this.value
+        );
+
+    }
+);
+
+
+/* =================================================
+   KAYITLI AYARLAR
+================================================= */
+
+const kayitliArkaPlan =
+    localStorage.getItem(
+        "eraArkaPlan"
+    );
+
+
+const kayitliYazi =
+    localStorage.getItem(
+        "eraYaziRengi"
+    );
+
+
+const kayitliFont =
+    localStorage.getItem(
+        "eraFont"
+    );
+
+
+if (kayitliArkaPlan) {
+
+    document.documentElement
+        .style.setProperty(
+            "--arka-plan",
+            kayitliArkaPlan
+        );
+
+    arkaPlan.value =
+        kayitliArkaPlan;
+}
+
+
+if (kayitliYazi) {
+
+    document.documentElement
+        .style.setProperty(
+            "--yazi",
+            kayitliYazi
+        );
+
+    yaziRengi.value =
+        kayitliYazi;
+}
+
+
+if (kayitliFont) {
+
+    document.body.style.fontFamily =
+        kayitliFont;
+
+    fontSec.value =
+        kayitliFont;
+}
+
+
+/* =================================================
+   TAM EKRAN
+================================================= */
+
+document
+    .getElementById("tamEkran")
+    .addEventListener(
+        "click",
+        async function () {
+
+            try {
 
                 if (
-                    ayarlar.style.display === "flex"
+                    !document.fullscreenElement
                 ) {
 
-                    ayarlar.style.display =
-                        "none";
+                    await document
+                        .documentElement
+                        .requestFullscreen();
 
                 }
 
                 else {
 
-                    ayarlar.style.display =
-                        "flex";
+                    await document
+                        .exitFullscreen();
 
                 }
 
             }
-        );
 
+            catch (hata) {
 
-
-        /* ==================================
-           TAM EKRAN
-        ================================== */
-
-        const tamEkran =
-            document.getElementById(
-                "tamEkran"
-            );
-
-
-        tamEkran.addEventListener(
-            "click",
-            async function () {
-
-                try {
-
-                    if (
-                        !document.fullscreenElement
-                    ) {
-
-                        await document
-                            .documentElement
-                            .requestFullscreen();
-
-                    }
-
-                    else {
-
-                        await document
-                            .exitFullscreen();
-
-                    }
-
-                }
-
-                catch (hata) {
-
-                    console.log(hata);
-
-                }
+                console.log(hata);
 
             }
-        );
+
+        }
+    );
 
 
+/* =================================================
+   F TUŞU
+================================================= */
 
-        /* ==================================
-           F TUŞU
-        ================================== */
+document.addEventListener(
+    "keydown",
+    function(event) {
 
-        document.addEventListener(
-            "keydown",
-            function (event) {
+        if (
+            event.key.toLowerCase() === "f" &&
+            event.target.tagName !== "INPUT" &&
+            event.target.tagName !== "SELECT"
+        ) {
 
-                if (
-                    event.key.toLowerCase() === "f" &&
-                    event.target.tagName !== "INPUT" &&
-                    event.target.tagName !== "SELECT"
-                ) {
-
-                    tamEkran.click();
-
-                }
-
-            }
-        );
-
-
-
-        /* ==================================
-           KAYITLI AYARLAR
-        ================================== */
-
-        const kayitliArkaPlan =
-            localStorage.getItem(
-                "arkaPlan"
-            );
-
-
-        const kayitliYaziRengi =
-            localStorage.getItem(
-                "yaziRengi"
-            );
-
-
-        const kayitliFont =
-            localStorage.getItem(
-                "fontSec"
-            );
-
-
-
-        if (kayitliArkaPlan) {
-
-            body.style.backgroundColor =
-                kayitliArkaPlan;
-
-            arkaPlan.value =
-                kayitliArkaPlan;
+            document
+                .getElementById(
+                    "tamEkran"
+                )
+                .click();
 
         }
 
+    }
+);
 
-
-        if (kayitliYaziRengi) {
-
-            saat.style.color =
-                kayitliYaziRengi;
-
-            yaziRengi.value =
-                kayitliYaziRengi;
-
-        }
-
-
-
-        if (kayitliFont) {
-
-            saat.style.fontFamily =
-                kayitliFont;
-
-            fontSec.value =
-                kayitliFont;
-
-        }
-
-
-    </script>
-
+</script>
 
 </body>
 </html>
